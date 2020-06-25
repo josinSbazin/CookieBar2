@@ -3,6 +3,7 @@ package org.aviran.cookiebar2;
 import android.animation.Animator;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Handler;
 import android.support.annotation.AttrRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -21,6 +22,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import org.aviran.cookiebar2.CookieBarDismissListener.DismissType;
 
 final class Cookie extends LinearLayout implements View.OnTouchListener {
@@ -85,7 +87,7 @@ final class Cookie extends LinearLayout implements View.OnTouchListener {
         iconImageView = findViewById(R.id.iv_icon);
         actionButton = findViewById(R.id.btn_action);
 
-        if(rootView == 0) {
+        if (rootView == 0) {
             validateLayoutIntegrity();
             initDefaultStyle(getContext());
         }
@@ -269,8 +271,12 @@ final class Cookie extends LinearLayout implements View.OnTouchListener {
     }
 
     public void dismiss(final CookieBarDismissListener listener) {
-        getHandler().removeCallbacksAndMessages(null);
-        if(listener != null) {
+        Handler viewHandler = getHandler();
+        if (viewHandler != null) {
+            viewHandler.removeCallbacksAndMessages(null);
+        }
+
+        if (listener != null) {
             dismissListener = listener;
         }
 
@@ -304,10 +310,9 @@ final class Cookie extends LinearLayout implements View.OnTouchListener {
 
     private int getDismissType() {
         int dismissType = DismissType.PROGRAMMATIC_DISMISS;
-        if(actionClickDismiss) {
+        if (actionClickDismiss) {
             dismissType = DismissType.USER_ACTION_CLICK;
-        }
-        else if(timeOutDismiss) {
+        } else if (timeOutDismiss) {
             dismissType = DismissType.DURATION_COMPLETE;
         }
         return dismissType;
